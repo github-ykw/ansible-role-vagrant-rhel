@@ -1,22 +1,34 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role has been created from the steps from post Vagrant Quick Start in 15 Minutes at https://linuxbuff.wordpress.com/2017/08/01/vagrant-quick-start-in-15-minutes/
+
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role will take a base CentOS/RHEL 7 server and Install Vagrant
+
+Tested on:
+ CentOS Linux release 7.3.1611 (Core)
+ Software Install = @base
+
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+There are 3 variables currently configured:
+
+sleeptime - time taken to allow the server to reboot
+markerfile1 - file laid down to prevent reboot if role is re-run
+vagrantrpm - the Vagrant RPM URL
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
+
 
 Example Playbook
 ----------------
@@ -24,8 +36,10 @@ Example Playbook
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
     - hosts: servers
+      become: yes
       roles:
-         - { role: username.rolename, x: 42 }
+         - ansible-role-vagrant-rhel
+         
 
 License
 -------
@@ -35,4 +49,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Author: LinuxBuff https://linuxbuff.wordpress.com
