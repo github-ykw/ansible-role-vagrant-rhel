@@ -1,0 +1,7 @@
+---
+# vars file for ansible-role-vagrant-rhel
+#
+sleeptime: 30
+markerfile1: '/root/ansible-prereq'
+vagrantrpm: 'https://releases.hashicorp.com/vagrant/1.9.7/vagrant_1.9.7_x86_64.rpm'
+

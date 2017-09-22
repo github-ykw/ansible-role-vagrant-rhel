@@ -1,0 +1,99 @@
+---
+# tasks file for ansible-role-vagrant-rhel
+#
+  - name: Part 0 - Pre-reqs
+    debug: msg="Part 0 - Pre-reqs "
+
+  - name: Configure repo
+    get_url: url="http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo" dest="/etc/yum.repos.d/virtualbox.repo"
+
+  - name: Install epel
+    yum: name=epel-release state=latest
+
+  - name: Perform yum upgrade
+    yum:
+      name: '*'
+      state: latest
+
+  - name: Reboot
+    shell: sleep 2 && shutdown -r now "Ansible reboot"
+    args:
+      creates: "{{ markerfile1 }}"
+    async: 1
+    poll: 0
+    ignore_errors: true
+
+  - name: an ansible sleep
+    pause: seconds={{ sleeptime }}
+
+  - name: wait for server to reboot
+    local_action: wait_for host={{ ansible_host }}   state=started  port=22 delay=30 timeout=300 connect_timeout=15
+
+  # a marker file to stop the reboot from happening every time
+  - name: create marker file
+    file: path="{{ markerfile1 }}" state=touch
+
+
+  - name: Part 1 - Install Core Software
+    debug: msg="Part 1 - Install Core Software"
+
+  - name: Installing required software
+    yum:
+     name: "{{ item }}"
+     state: present
+    with_items:
+     - gcc
+     - dkms
+     - make
+     - qt
+     - libgomp
+     - patch
+     - kernel-headers
+     - kernel-devel
+     - fontforge
+     - binutils
+     - glibc-headers
+     - glibc-devel
+
+  - name: Installing VirtualBox
+    yum: name="VirtualBox-5.1" state=present
+
+
+
+  - name: Part 2 - Install vagrant
+    debug: msg="Part 2 - Install vagrant"
+
+  - name: Running Virtual Box Setup
+    shell: /sbin/rcvboxdrv setup
+    args:
+      creates: /home/vagrant/.vagrant.d/boxes/precise64
+
+  - name: Install Vagrant
+    yum:
+      name: "{{ vagrantrpm }}"
+      state: present
+
+
+
+  - name: Part 3 - Add user for use
+    debug: msg="Part 3 - Add user for use"
+
+  - name: Create vagrant user
+    user: name=vagrant state=present groups=vboxusers
+
+
+
+  - name: Part 4 - Test
+    debug: msg="Part 4 - Test"
+
+  - name: Get Vagrant Box
+    shell: "su - vagrant -c 'vagrant init precise64 http://files.vagrantup.com/precise64.box '"
+    args:
+      creates: /home/vagrant/Vagrantfile
+
+  - name: Start Vagrant Box
+    shell: "su - vagrant -c 'vagrant up'"
+    args:
+      creates: /home/vagrant/.vagrant.d/boxes/precise64
+
+  
