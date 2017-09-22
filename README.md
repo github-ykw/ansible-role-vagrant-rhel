@@ -13,6 +13,7 @@ Software Install = @base
 
 
 USAGE:
+-----
 
 Create a yml file e.g.
 
@@ -22,6 +23,13 @@ Create a yml file e.g.
 
   roles:
    - ansible-role-vagrant-rhel
+
+
+Run with ansible-playbook 
+
+
+
+
 
 
 
